@@ -1,0 +1,5 @@
+.DS_Store
+trailwatch-ux-slides/node_modules/
+trailwatch-ux-slides/dist/
+*.log
+.vite/

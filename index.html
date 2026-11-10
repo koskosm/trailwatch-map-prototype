@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>TrailWatch — iOS prototype</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script src="https://unpkg.com/lucide@0.468.0"></script>
+</head>
+<body>
+  <div class="demo-page">
+    <div class="demo-top">
+      <div>
+        <div class="eyebrow">iPhone 18 Pro · 402×874</div>
+        <h1 id="appTitle">TrailWatch</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button type="button" class="reset-demo" id="resetDemo">Reset</button>
+        <div class="lang-switch" id="langSwitch">
+          <button type="button" data-lang="en" data-active="true">EN</button>
+          <button type="button" data-lang="zh">繁</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone-stage">
+    <div class="phone-frame" aria-label="iPhone 18 Pro 402×874">
+      <div class="phone-notch" aria-hidden="true"></div>
+      <div class="phone-screen">
+        <div class="screen-root" id="screenRoot">
+
+          <!-- Onboarding -->
+          <div class="onboard" id="onboard">
+            <div style="display:flex;gap:6px;margin-bottom:28px" id="onboardProgress">
+              <i style="flex:1;height:4px;border-radius:999px;background:var(--ios-tint)"></i>
+              <i style="flex:1;height:4px;border-radius:999px;background:var(--ios-fill)"></i>
+              <i style="flex:1;height:4px;border-radius:999px;background:var(--ios-fill)"></i>
+            </div>
+            <div style="width:56px;height:56px;border-radius:16px;background:var(--ios-tint-soft);display:grid;place-items:center;color:var(--ios-tint)">
+              <i data-lucide="compass" style="width:28px;height:28px"></i>
+            </div>
+            <h2 id="onboardTitle" class="ios-large-title" style="margin-top:18px;font-size:28px"></h2>
+            <p id="onboardBody" style="margin-top:8px;font-size:16px;line-height:1.35;color:var(--ios-secondary)"></p>
+            <div class="onboard-body" id="onboardChoices" style="flex:1;overflow:auto;margin-top:24px"></div>
+            <div style="display:flex;gap:10px;padding-top:12px">
+              <button type="button" class="ios-btn ios-btn-gray" id="onboardSkip" style="flex:0 0 auto;padding-inline:20px"></button>
+              <button type="button" class="ios-btn ios-btn-fill" id="onboardNext" style="flex:1"></button>
+            </div>
+          </div>
+
+          <!-- MAP -->
+          <div class="view active" id="viewMap" data-view="map">
+            <div id="mapCanvas"></div>
+
+            <div class="pointer-events-none" style="position:absolute;inset:0 0 auto;z-index:900;padding:58px 16px 0;pointer-events:none">
+              <button type="button" class="glass-pill pointer-events-auto map-search-trigger" id="mapSearchTrigger" style="display:flex;align-items:center;gap:8px;border-radius:14px;padding:11px 14px;pointer-events:auto;width:100%;text-align:left">
+                <i data-lucide="search" style="width:18px;height:18px;color:var(--ios-tertiary);flex-shrink:0"></i>
+                <span id="mapSearchLabel" style="flex:1;font-size:17px;color:var(--ios-tertiary)"></span>
+                <span class="map-search-filter-dot" id="mapSearchFilterDot" hidden></span>
+              </button>
+            </div>
+
+            <!-- Search screen -->
+            <div class="search-panel" id="searchPanel" hidden>
+              <div class="search-panel-top">
+                <div class="search-panel-bar">
+                  <button type="button" class="ios-close" id="searchBack" aria-label="Back"><i data-lucide="chevron-left"></i></button>
+                  <div class="search-panel-field">
+                    <i data-lucide="search" style="width:16px;height:16px;color:var(--ios-tertiary);flex-shrink:0"></i>
+                    <input id="searchPanelInput" type="search" autocomplete="off" />
+                    <button type="button" class="search-clear" id="searchClear" hidden aria-label="Clear">×</button>
+                  </div>
+                  <button type="button" class="search-filter-btn" id="btnSearchFilter" aria-label="Filters">
+                    <i data-lucide="sliders-horizontal"></i>
+                    <span class="map-search-filter-dot" id="searchFilterDot" hidden></span>
+                  </button>
+                </div>
+              </div>
+              <div class="search-panel-body" id="searchPanelBody"></div>
+            </div>
+
+            <div class="map-side-controls">
+              <button type="button" class="glass-btn" id="btnLayers" title="Layers"><i data-lucide="layers"></i></button>
+              <button type="button" class="glass-btn" id="btnRecenter" title="Recenter"><i data-lucide="locate"></i></button>
+            </div>
+
+            <button type="button" class="glass-btn danger map-report-fab" id="btnReport" title="Report"><i data-lucide="plus"></i></button>
+
+            <div class="sheet peek" id="mapSheet">
+              <button type="button" class="sheet-grabber" id="sheetHandle" aria-label="Resize"></button>
+              <div class="sheet-peek" id="sheetPeek"></div>
+              <div class="sheet-chips" id="sheetChips" role="tablist" aria-label="Map sheet"></div>
+              <div class="sheet-subchips" id="sheetExploreSubs" hidden aria-label="Explore filters"></div>
+              <div class="sheet-body" id="sheetBody"></div>
+            </div>
+          </div>
+
+          <!-- COMMUNITY -->
+          <div class="view" id="viewCommunity" data-view="community">
+            <div class="ios-nav-header">
+              <h1 id="communityTitle" class="ios-large-title"></h1>
+              <div class="ios-segmented" id="communitySegments" style="margin-top:14px">
+                <button type="button" data-seg="posts" data-active="true"></button>
+                <button type="button" data-seg="groups"></button>
+              </div>
+            </div>
+            <div class="ios-page-body">
+              <div class="ios-search">
+                <i data-lucide="search" style="width:16px;height:16px;color:var(--ios-tertiary)"></i>
+                <input id="communitySearch" type="search" />
+              </div>
+              <div class="sheet-chips" id="communityFilters" style="padding:0 0 12px"></div>
+              <div id="communityList"></div>
+            </div>
+          </div>
+
+          <!-- RECORD -->
+          <div class="view" id="viewRecord" data-view="record" style="background:#e8eee8">
+            <div id="recordMap"></div>
+            <div class="pointer-events-none" style="position:absolute;inset:0 0 auto;z-index:900;display:flex;justify-content:space-between;padding:58px 14px 0;pointer-events:none">
+              <div class="ios-segmented glass-pill pointer-events-auto" id="modeToggle" style="pointer-events:auto;grid-template-columns:1fr 1fr;min-width:168px">
+                <button type="button" data-mode="track" data-active="true"></button>
+                <button type="button" data-mode="plan"></button>
+              </div>
+              <div class="glass-pill pointer-events-auto" id="gpsPill" style="pointer-events:auto;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--ios-tint)">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--ios-tint)"></span>
+                <span id="gpsPillText"></span>
+              </div>
+            </div>
+
+            <div id="recordIdle" style="position:absolute;left:16px;right:16px;bottom:calc(var(--tabbar-h) + 28px);z-index:900">
+              <div id="followHint" style="text-align:center;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--ios-tint)"></div>
+              <button type="button" class="ios-btn ios-btn-fill" id="btnStart" style="width:100%"></button>
+            </div>
+
+            <div class="record-drawer" id="recordDrawer">
+              <button type="button" class="sheet-grabber" id="drawerHandle"></button>
+              <div class="stat-grid" id="liveStats"></div>
+              <div class="drawer-extra">
+                <div class="stat-grid" id="liveStatsExtra"></div>
+                <div id="elevGraph" style="height:72px;margin-top:12px;border-radius:12px;background:var(--ios-fill);overflow:hidden"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+                <button type="button" class="ios-btn ios-btn-gray" id="btnPause"></button>
+                <button type="button" class="ios-btn ios-btn-fill" id="btnFinish"></button>
+              </div>
+              <button type="button" class="ios-btn ios-btn-plain" id="btnReportLive" style="width:100%;margin-top:4px"></button>
+            </div>
+
+            <div class="plan-panel" id="planPanel">
+              <div id="planTools" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+              <div class="stat-grid" id="planStats" style="margin-bottom:12px"></div>
+              <label id="lblPlanTitle" style="display:block;font-size:13px;font-weight:600;color:var(--ios-secondary);margin-bottom:6px"></label>
+              <input id="planTitle" type="text" style="width:100%;border:none;background:var(--ios-fill);border-radius:12px;padding:12px 14px;font-size:17px;margin-bottom:12px;outline:none" />
+              <button type="button" class="ios-btn ios-btn-fill" id="btnSavePlan" style="width:100%"></button>
+            </div>
+          </div>
+
+          <!-- YOU -->
+          <div class="view" id="viewYou" data-view="you">
+            <div id="profileHub" style="flex:1;min-height:0;overflow:auto">
+              <div class="ios-nav-header" style="text-align:center;padding-bottom:20px">
+                <div id="profileAvatar" style="width:72px;height:72px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(145deg,#34c759,#1a7f37);color:#fff;display:grid;place-items:center;font-size:28px;font-weight:700"></div>
+                <h1 id="profileName" style="font-size:22px;font-weight:700;letter-spacing:-0.02em"></h1>
+                <div class="stat-grid" id="profileStats" style="margin-top:16px;text-align:left"></div>
+              </div>
+              <div class="ios-page-body" style="padding-top:4px">
+                <div class="ios-group" id="profileMenu"></div>
+              </div>
+            </div>
+            <div id="profileSub" class="hidden">
+              <div class="ios-nav-header" style="display:flex;align-items:center;gap:8px;padding-top:54px;padding-bottom:10px">
+                <button type="button" class="ios-btn ios-btn-plain" id="profileBack" style="min-height:auto;padding:0;font-size:17px">
+                  <i data-lucide="chevron-left" style="width:22px;height:22px"></i>
+                </button>
+                <h2 id="profileSubTitle" style="flex:1;font-size:17px;font-weight:600;text-align:center;margin-right:28px"></h2>
+              </div>
+              <div class="ios-page-body" id="profileSubBody"></div>
+            </div>
+          </div>
+
+          <!-- Overlay -->
+          <div class="overlay" id="overlay">
+            <div class="overlay-sheet">
+              <div class="overlay-grabber" aria-hidden="true"></div>
+              <div class="overlay-head">
+                <span style="width:30px;flex-shrink:0" aria-hidden="true"></span>
+                <h2 id="overlayTitle"></h2>
+                <button type="button" class="ios-close" id="overlayClose" aria-label="Close"><i data-lucide="x"></i></button>
+              </div>
+              <div class="overlay-body" id="overlayBody"></div>
+              <div class="overlay-footer hidden" id="overlayFooter"></div>
+            </div>
+          </div>
+
+          <div class="toast" id="toast"></div>
+
+          <!-- Expanded trail route map -->
+          <div class="trail-map-lightbox" id="trailMapLightbox" hidden>
+            <div class="trail-map-lightbox-bar">
+              <button type="button" class="ios-close" id="trailMapLightboxClose" aria-label="Close"><i data-lucide="x"></i></button>
+              <div class="trail-map-lightbox-title" id="trailMapLightboxTitle"></div>
+              <span style="width:30px" aria-hidden="true"></span>
+            </div>
+            <div class="trail-map-lightbox-map" id="trailDetailMapExpanded"></div>
+          </div>
+        </div>
+
+        <!-- iOS Liquid Glass tab bar — equal weight, floats above content -->
+        <nav class="ios-tabbar" id="bottomNav" aria-label="Tab Bar">
+          <button type="button" class="ios-tab" data-nav="map" data-active="true">
+            <span class="tab-ico"><i data-lucide="map"></i></span>
+            <span class="tab-label" data-i18n="nav_map">Map</span>
+          </button>
+          <button type="button" class="ios-tab" data-nav="community">
+            <span class="tab-ico"><i data-lucide="users"></i></span>
+            <span class="tab-label" data-i18n="nav_community">Community</span>
+          </button>
+          <button type="button" class="ios-tab" data-nav="record">
+            <span class="tab-ico"><i data-lucide="circle-play"></i></span>
+            <span class="tab-label" data-i18n="nav_record">Record</span>
+          </button>
+          <button type="button" class="ios-tab" data-nav="you">
+            <span class="tab-ico"><i data-lucide="user"></i></span>
+            <span class="tab-label" data-i18n="nav_you">You</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function refreshIcons() {
+      if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.75 } });
+    }
+    document.addEventListener("DOMContentLoaded", refreshIcons);
+    window.refreshIcons = refreshIcons;
+  </script>
+</body>
+</html>

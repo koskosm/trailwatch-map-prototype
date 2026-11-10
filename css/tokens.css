@@ -1,0 +1,27 @@
+/* TrailWatch map-first prototype — design tokens */
+:root {
+  --green-900: #0b421a;
+  --green-800: #0f5c24;
+  --green-700: #1a6b32;
+  --green-600: #2d8a45;
+  --green-500: #3da855;
+  --green-100: #e8f5ea;
+  --green-50: #f1f8f1;
+  --mint: #f4faf4;
+  --sky: #4a90c8;
+  --gold: #c9a227;
+  --amber: #f5a623;
+  --red: #d64545;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --border: #e5e7eb;
+  --white: #ffffff;
+  --shadow: 0 2px 12px rgba(11, 66, 26, 0.08);
+  --shadow-lg: 0 8px 32px rgba(11, 66, 26, 0.12);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --nav-h: 64px;
+  --safe-bottom: 0px;
+}
