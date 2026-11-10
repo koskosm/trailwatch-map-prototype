@@ -1712,7 +1712,7 @@
     ensureDraft();
     const progress = $$("#onboardProgress i");
     progress.forEach((el, i) => {
-      el.style.cssText = "flex:1;height:4px;border-radius:999px;background:" + (i <= onboardStep ? "var(--ios-tint)" : "var(--ios-fill)");
+      el.style.background = i <= onboardStep ? "var(--ios-tint)" : "var(--ios-fill)";
     });
     $("#onboardTitle").textContent = t("onboard_title_" + (onboardStep + 1));
     $("#onboardBody").textContent = t("onboard_body_" + (onboardStep + 1));
@@ -1722,19 +1722,19 @@
     const box = $("#onboardChoices");
     if (onboardStep === 0) {
       const opts = Object.keys(TW_I18N.en.district_options);
-      box.innerHTML = `<div class="flex flex-wrap gap-2">${opts
+      box.innerHTML = `<div class="onboard-chips">${opts
         .map((d) => choiceBtn(t("district_options." + d), draftPrefs.districts.includes(d), `data-district="${d}"`))
         .join("")}</div>`;
     } else if (onboardStep === 1) {
       const opts = Object.keys(TW_I18N.en.interest_options);
-      box.innerHTML = `<div class="flex flex-wrap gap-2">${opts
+      box.innerHTML = `<div class="onboard-chips">${opts
         .map((d) => choiceBtn(t("interest_options." + d), draftPrefs.interests.includes(d), `data-interest="${d}"`))
         .join("")}</div>`;
     } else {
       box.innerHTML = `
-        <div>
-          <label class="mb-1.5 block text-xs font-bold text-slate-500">${t("live_mode")}</label>
-          <div class="flex flex-wrap gap-2">
+        <div class="ov-field">
+          <label class="ov-label">${t("live_mode")}</label>
+          <div class="onboard-chips">
             ${["off", "friends", "nearby"]
               .map((m) => choiceBtn(t("live_" + m), draftPrefs.liveMode === m, `data-live="${m}"`))
               .join("")}
@@ -2254,27 +2254,27 @@
       const interests = Object.keys(TW_I18N.en.interest_options);
       const layers = ["incidents", "alerts", "new", "trending", "recommended", "groups", "live"];
       body.innerHTML = `
-        <div class="mb-4"><label class="mb-1.5 block text-xs font-bold text-slate-500">${t("districts")}</label>
-          <div class="flex flex-wrap gap-2" id="prefDistricts">
+        <div class="ov-field"><label class="ov-label">${t("districts")}</label>
+          <div class="ov-chip-row" id="prefDistricts">
             ${districts.map((d) => choiceBtn(t("district_options." + d), p.districts.includes(d), `data-district="${d}"`)).join("")}
           </div>
         </div>
-        <div class="mb-4"><label class="mb-1.5 block text-xs font-bold text-slate-500">${t("interests")}</label>
-          <div class="flex flex-wrap gap-2" id="prefInterests">
+        <div class="ov-field"><label class="ov-label">${t("interests")}</label>
+          <div class="ov-chip-row" id="prefInterests">
             ${interests.map((d) => choiceBtn(t("interest_options." + d), p.interests.includes(d), `data-interest="${d}"`)).join("")}
           </div>
         </div>
-        <div class="mb-4"><label class="mb-1.5 block text-xs font-bold text-slate-500">${t("live_mode")}</label>
-          <div class="flex flex-wrap gap-2" id="prefLive">
+        <div class="ov-field"><label class="ov-label">${t("live_mode")}</label>
+          <div class="ov-chip-row" id="prefLive">
             ${["off", "friends", "nearby"].map((m) => choiceBtn(t("live_" + m), p.liveMode === m, `data-live="${m}"`)).join("")}
           </div>
         </div>
-        <div class="mb-4"><label class="mb-1.5 block text-xs font-bold text-slate-500">${t("layers")}</label>
-          <div class="flex flex-wrap gap-2" id="prefLayers">
+        <div class="ov-field"><label class="ov-label">${t("layers")}</label>
+          <div class="ov-chip-row" id="prefLayers">
             ${layers.map((l) => choiceBtn(t("layer_" + l), !!p.layers[l], `data-layer="${l}"`)).join("")}
           </div>
         </div>
-        <button type="button" class="ios-btn ios-btn-fill" id="saveProfilePrefs">${t("save")}</button>
+        <button type="button" class="ios-btn ios-btn-fill ios-btn-block" id="saveProfilePrefs">${t("save")}</button>
       `;
     }
     icons();

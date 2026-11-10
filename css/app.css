@@ -1252,11 +1252,95 @@ button {
   z-index: 1200 !important;
   flex-direction: column;
   background: var(--ios-bg);
-  padding: 64px 24px 28px;
+  padding: 64px 24px 34px;
+  box-sizing: border-box;
 }
 
 .onboard.open {
   display: flex;
+}
+
+.onboard-progress {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 28px;
+  flex-shrink: 0;
+}
+
+.onboard-progress i {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--ios-fill);
+}
+
+.onboard-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--ios-tint-soft);
+  display: grid;
+  place-items: center;
+  color: var(--ios-tint);
+  flex-shrink: 0;
+}
+
+.onboard-icon svg,
+.onboard-icon [data-lucide] {
+  width: 28px;
+  height: 28px;
+}
+
+.onboard-title {
+  margin: 18px 0 0;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.onboard-copy {
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--ios-secondary);
+}
+
+.onboard-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  margin-top: 28px;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.onboard-body .ov-chip-row,
+.onboard-body .onboard-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+}
+
+.onboard-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.onboard-actions .ios-btn {
+  min-height: 50px;
+}
+
+.onboard-actions #onboardSkip {
+  flex: 0 0 auto;
+  min-width: 96px;
+  padding-inline: 22px;
+}
+
+.onboard-actions #onboardNext {
+  flex: 1 1 auto;
 }
 
 /* —— Community / Profile pages —— */
